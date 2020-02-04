@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import '../App.css';
+import './Home.css';
 import { Typography, Input, IconButton } from '@material-ui/core';
 import { Magnify } from 'mdi-material-ui';
-import { searchEmployee } from '../services/getEmployee';
 
 export default class Home extends Component {
 
@@ -19,7 +18,7 @@ export default class Home extends Component {
   }
 
   handleSearch = () => {
-    searchEmployee(this.state.searchText);
+    this.props.history.push(`/overview/${this.state.searchText}`)
   }
 
   render() {
