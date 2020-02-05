@@ -16,9 +16,9 @@ export default class EmployeeInfo extends Component {
 
   loadEmployee = async () => {
     const result = await getWholeTree(this.props.name);
-    this.setState({ self: result[this.props.name] });
-    delete result[this.props.name]
-    this.setState({ subordinates: result });
+    const self = { ...result[this.props.name] };
+    delete result[this.props.name];
+    this.setState({ self, subordinates: result });
   }
 
   render() {
@@ -28,17 +28,21 @@ export default class EmployeeInfo extends Component {
     return (
       <div className='info'>
         <div className='self-position'>
-          <Typography variant='h5'>{`Position of ${name}: ${self.position}`}</Typography>
+          <Typography variant='h5'>{name}</Typography>
+          <Typography variant='subtitle1'>{self.position}</Typography>
+        </div>
+        <div className='subtitle'>
+          <Typography variant='h6'>{Object.values(subordinates).length > 0 ? `Subordinates of employee ${name}: ` : 'No subordinate'}</Typography>
         </div>
         {
           Object.values(subordinates).map(sub => (
             <div className='sub-name' key={sub.name}>
-            <Typography variant='h6'>
-              {sub.name}
-            </Typography>
-            <Typography variant='overline'>
-              {sub.position}
-            </Typography>
+              <Typography variant='h6'>
+                {sub.name}
+              </Typography>
+              <Typography variant='overline'>
+                {sub.position}
+              </Typography>
             </div>
           ))
         }

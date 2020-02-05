@@ -18,9 +18,6 @@ function Overview() {
       <div className='overview-title'>
         <Typography variant='h2'>Employee Overview </Typography>
       </div>
-      <div className='overview-title'>
-        <Typography variant='h4'>{`Subordinates of employee ${slug}: `}</Typography>
-      </div>
       <div className='overview-body'>
         <EmployeeInfo name={slug} />
       </div>
