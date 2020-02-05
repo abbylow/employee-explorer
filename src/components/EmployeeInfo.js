@@ -29,7 +29,7 @@ export default class EmployeeInfo extends Component {
       <div className='info'>
         <div className='self-position'>
           <Typography variant='h5'>{name}</Typography>
-          <Typography variant='subtitle1'>{self.position}</Typography>
+          <Typography variant='subtitle1'>{self.position ? self.position : 'No position in this company'}</Typography>
         </div>
         <div className='subtitle'>
           <Typography variant='h6'>{Object.values(subordinates).length > 0 ? `Subordinates of employee ${name}: ` : 'No subordinate'}</Typography>
