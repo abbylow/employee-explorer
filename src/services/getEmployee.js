@@ -19,7 +19,7 @@ export async function getWholeTree(name) {
 }
 
 async function getSubordinates(name) {
-  const response = await axios.get(`http://api.additivasia.io/api/v1/assignment/employees/${name}`);
+  const response = await axios.get(`https://api.additivasia.io/api/v1/assignment/employees/${name}`);
   return {
     name: name,
     position: response.data[0],

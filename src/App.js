@@ -7,7 +7,7 @@ import Overview from './components/Overview';
 export default function App() {
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
       <div className="app" >
         <Switch>
           <Route exact path='/' component={Home} />
