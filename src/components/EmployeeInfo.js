@@ -1,53 +1,51 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import './EmployeeInfo.css';
-import { getWholeTree } from '../services/getEmployee';
+import { getSubordinates } from '../services/getEmployee';
 import { Typography } from '@material-ui/core';
 
-export default class EmployeeInfo extends Component {
+export default function EmployeeInfo({ name, shownList, setShownList }) {
 
-  state = {
-    self: {},
-    subordinates: {},
-  }
+  const [position, setPosition] = useState('');
+  const [subordinates, setSubordinates] = useState([]);
 
-  componentDidMount() {
-    this.loadEmployee();
-  }
+  useEffect(() => {
+    async function getInfo(name) {
+      const thisEmployee = await getSubordinates(name);
+      setPosition(thisEmployee.position);
+      setShownList(prev => prev.add(name));
 
-  loadEmployee = async () => {
-    const result = await getWholeTree(this.props.name);
-    const self = { ...result[this.props.name] };
-    delete result[this.props.name];
-    this.setState({ self, subordinates: result });
-  }
-
-  render() {
-    const { name } = this.props;
-    const { self, subordinates } = this.state;
-
-    return (
-      <div className='info'>
-        <div className='self-position'>
-          <Typography variant='h5'>{name}</Typography>
-          <Typography variant='subtitle1'>{self.position ? self.position : 'No position in this company'}</Typography>
-        </div>
-        <div className='subtitle'>
-          <Typography variant='h6'>{Object.values(subordinates).length > 0 ? `Subordinates of employee ${name}: ` : 'No subordinate'}</Typography>
-        </div>
-        {
-          Object.values(subordinates).map(sub => (
-            <div className='sub-name' key={sub.name}>
-              <Typography variant='h6'>
-                {sub.name}
-              </Typography>
-              <Typography variant='overline'>
-                {sub.position}
-              </Typography>
-            </div>
-          ))
+      let deduplicatedSubs = Array.from(thisEmployee.directSubordinates);
+      deduplicatedSubs.forEach((sub, idx) => {
+        if (shownList.has(sub)) {
+          deduplicatedSubs.splice(idx, 1);
         }
-      </div>
-    );
-  }
+      });
 
+      deduplicatedSubs.forEach((sub) => {
+        setShownList(prev => prev.add(sub))
+      });
+      
+      setSubordinates(deduplicatedSubs);
+    }
+
+    getInfo(name);
+
+    return;
+  }, [name, shownList, setShownList])
+
+
+  return (
+    <div className='info'>
+      <div className='self-position'>
+        <Typography variant='h5'>{name}</Typography>
+        <Typography variant='subtitle1'>{position ? position : 'No position in this company'}</Typography>
+      </div>
+      {
+        subordinates.map(sub => (
+          <EmployeeInfo name={sub} key={sub} shownList={shownList} setShownList={setShownList} />
+        ))
+      }
+    </div>
+  );
 }
+
